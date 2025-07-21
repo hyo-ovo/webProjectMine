@@ -9,17 +9,22 @@
 <body>
 <h2>HOME</h2>
 
-<!-- ✅ 로그인한 사용자 이름 출력 -->
 <p>안녕하세요, <span th:text="${username}">사용자</span>님!</p>
 
-<!-- ✅ 글쓰기 버튼: 로그인한 사용자에게만 표시 -->
+<!-- ✅ 글 목록 보기 -->
+<div>
+    <a th:href="@{/articles}">
+        <button type="button">글 목록 보기</button>
+    </a>
+</div>
+
+<!-- ✅ 글쓰기: 로그인 사용자만 -->
 <div sec:authorize="isAuthenticated()">
-    <a th:href="@{/write}">
+    <a th:href="@{/articles/new}">
         <button type="button">글쓰기</button>
     </a>
 </div>
 
-<!-- ✅ 로그아웃 폼 -->
 <form th:action="@{/logout}" method="post">
     <button type="submit">로그아웃</button>
 </form>
