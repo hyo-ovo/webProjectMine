@@ -6,9 +6,19 @@
 <body>
 <h2>로그인</h2>
 
-<!-- ✅ 회원가입 성공 메시지 출력 -->
+<!-- ✅ 회원가입 성공 메시지 -->
 <div th:if="${param.signupSuccess}" style="color: green;">
     회원가입이 완료되었습니다. 로그인해주세요.
+</div>
+
+<!-- ✅ 로그인 실패 메시지 -->
+<div th:if="${param.error}" style="color: red;">
+    아이디 또는 비밀번호가 잘못되었습니다.
+</div>
+
+<!-- ✅ 로그아웃 성공 메시지 -->
+<div th:if="${param.logout}" style="color: blue;">
+    로그아웃되었습니다.
 </div>
 
 <!-- ✅ 로그인 폼 -->
@@ -22,10 +32,9 @@
     <button type="submit">로그인</button>
 </form>
 
-<!-- ✅ 로그인 버튼 옆 회원가입 버튼 -->
+<!-- ✅ 회원가입 이동 버튼 -->
 <form th:action="@{/signup}" method="get" style="display:inline;">
     <button type="submit">회원가입</button>
 </form>
-
 </body>
 </html>

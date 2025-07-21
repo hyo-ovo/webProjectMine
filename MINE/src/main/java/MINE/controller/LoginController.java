@@ -1,5 +1,3 @@
-// src/main/java/MINE/controller/LoginController.java
-
 package MINE.controller;
 
 import org.springframework.stereotype.Controller;
@@ -11,11 +9,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
 
     @GetMapping("/login")
-    public String login(@RequestParam(value = "signupSuccess", required = false) String signupSuccess,
+    public String login(@RequestParam(value = "error", required = false) String error,
+                        @RequestParam(value = "signupSuccess", required = false) String signupSuccess,
                         Model model) {
         if (signupSuccess != null) {
-            model.addAttribute("signupSuccess", true); // 템플릿에서 표시할 플래그
+            model.addAttribute("signupSuccess", true);
         }
-        return "login"; // templates/login.html 반환
+        if (error != null) {
+            model.addAttribute("loginError", true);
+        }
+        return "login"; // templates/login.html
     }
 }
