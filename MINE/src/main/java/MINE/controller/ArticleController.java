@@ -54,8 +54,15 @@ public class ArticleController {
 
     // 글 목록
     @GetMapping("/articles")
-    public String listArticles(Model model) {
-        List<Article> articles = articleRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+    public String listArticles(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+        List<Article> articles;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            articles = articleRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword);
+            model.addAttribute("keyword", keyword);
+        } else {
+            articles = articleRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+            model.addAttribute("keyword", null);
+        }
         model.addAttribute("articles", articles);
         return "list";
     }

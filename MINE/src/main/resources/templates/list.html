@@ -7,6 +7,16 @@
 <body>
 <h2>글 목록</h2>
 
+<!-- 검색 폼 -->
+<form th:action="@{/articles}" method="get" style="margin-bottom: 20px;">
+    <input type="text" name="keyword" th:value="${keyword}" placeholder="제목+본문 검색어 입력"/>
+    <button type="submit">검색</button>
+    <span th:if="${keyword != null and keyword != ''}">
+        <b th:text="'검색 결과: ' + ${keyword}"></b>
+        <a th:href="@{/articles}" style="margin-left:10px;">전체보기</a>
+    </span>
+</form>
+
 <table border="1">
     <thead>
     <tr>
@@ -17,6 +27,9 @@
     </tr>
     </thead>
     <tbody>
+    <tr th:if="${#lists.isEmpty(articles)}">
+        <td colspan="4">게시글이 없습니다.</td>
+    </tr>
     <tr th:each="article : ${articles}">
         <td>
             <a th:href="@{'/articles/' + ${article.id}}" th:text="${article.title}">제목</a>
@@ -25,7 +38,7 @@
         <td th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</td>
         <td>
             <!-- 현재 로그인한 사용자가 작성자와 동일할 때만 수정/삭제 버튼 노출 -->
-            <div th:if="${#authentication.name == article.author}">
+            <div th:if="${#authorization.expression('isAuthenticated()') and #authentication.name == article.author}">
                 <a th:href="@{'/articles/' + ${article.id} + '/edit'}">
                     <button type="button">수정</button>
                 </a>
