@@ -28,6 +28,10 @@ public class UserService {
         return userRepository.findByUsername(username).orElse(null);
     }
 
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
     public void register(String username, String rawPassword) {
         signUp(username, rawPassword);
     }
