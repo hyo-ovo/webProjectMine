@@ -1,7 +1,9 @@
 package MINE.controller;
 
 import MINE.domain.Article;
+import MINE.domain.Comment;
 import MINE.repository.ArticleRepository;
+import MINE.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -19,6 +21,9 @@ public class ArticleController {
 
     @Autowired
     private ArticleRepository articleRepository;
+    
+    @Autowired
+    private CommentRepository commentRepository;
 
     // 글쓰기 폼
     @GetMapping("/articles/new")
@@ -72,7 +77,20 @@ public class ArticleController {
     public String viewArticle(@PathVariable Long id, Model model) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 글이 존재하지 않습니다: id=" + id));
+        
+        // 댓글 목록 가져오기
+        List<Comment> comments = commentRepository.findByArticleIdOrderByCreatedAtAsc(id);
+        
+        // 다른 글 목록 (최신 5개)
+        List<Article> otherArticles = articleRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+        otherArticles = otherArticles.stream()
+                .filter(a -> !a.getId().equals(id))
+                .limit(5)
+                .toList();
+        
         model.addAttribute("article", article);
+        model.addAttribute("comments", comments);
+        model.addAttribute("otherArticles", otherArticles);
         return "articleDetail";
     }
 
@@ -125,5 +143,23 @@ public class ArticleController {
         
         articleRepository.delete(article);
         return "redirect:/articles";
+    }
+    
+    // 댓글 추가
+    @PostMapping("/articles/{id}/comments")
+    public String addComment(@PathVariable Long id,
+                             @RequestParam String content,
+                             Principal principal) {
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 글이 존재하지 않습니다: id=" + id));
+        
+        Comment comment = new Comment();
+        comment.setContent(content);
+        comment.setAuthor(principal != null ? principal.getName() : "anonymous");
+        comment.setArticle(article);
+        
+        commentRepository.save(comment);
+        
+        return "redirect:/articles/" + id;
     }
 }

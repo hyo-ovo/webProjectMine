@@ -16,8 +16,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/write", "/home", "/auth/**", "/signup", "/signup/**","/login", "/register", "/css/**", "/js/**", "/images/**", "/h2-console/**").permitAll()
-                        .requestMatchers("/articles/new").authenticated()
+                        .requestMatchers("/check-username").permitAll()
+                        .requestMatchers("/write", "/home", "/auth/**", "/signup", "/signup/**", "/login", "/register", "/css/**", "/js/**", "/images/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/articles/new", "/articles/*/comments").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -29,9 +30,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**")
-                )
+                .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin())
                 );

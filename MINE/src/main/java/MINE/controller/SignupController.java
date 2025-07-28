@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,5 +32,13 @@ public class SignupController {
             model.addAttribute("signupError", true);
             return "signup";
         }
+    }
+
+    // 아이디(Username) 중복확인
+    @GetMapping("/check-username")
+    @ResponseBody
+    public java.util.Map<String, Boolean> checkUsername(@RequestParam String username) {
+        boolean exists = userService.existsByUsername(username);
+        return java.util.Collections.singletonMap("exists", exists);
     }
 }

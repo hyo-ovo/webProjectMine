@@ -3,33 +3,437 @@
 <head>
     <meta charset="UTF-8">
     <title>글 상세</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        /* 네비게이션 바 */
+        .navbar {
+            background: #2d2d2d;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #a48fff;
+        }
+        
+        .logout-btn {
+            background: #a48fff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        /* 메인 컨테이너 */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* 제목 섹션 */
+        .title-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #a48fff;
+            margin-bottom: 10px;
+        }
+        
+        /* 글 상세 섹션 */
+        .article-section {
+            background: #2d2d2d;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .article-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .article-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .edit-delete-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-btn, .delete-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .edit-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .delete-btn {
+            background: #f44336;
+            color: white;
+        }
+        
+        .edit-btn:hover, .delete-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .article-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        /* 댓글 섹션 */
+        .comments-section {
+            margin-top: 30px;
+        }
+        
+        .comments-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #a48fff;
+        }
+        
+        .comment {
+            background: #3d3d3d;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #a48fff;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .comment-author {
+            font-weight: bold;
+            color: #a48fff;
+        }
+        
+        .comment-date {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .comment-content {
+            color: #ffffff;
+        }
+        
+        /* 댓글 입력 폼 */
+        .comment-form {
+            background: #3d3d3d;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .comment-input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .comment-author-display {
+            background: #a48fff;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .comment-input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            background: #555;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .comment-input::placeholder {
+            color: #aaa;
+        }
+        
+        .comment-submit {
+            background: #a48fff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .comment-submit:hover {
+            background: #8b7fd8;
+        }
+        
+        /* 목록 버튼 */
+        .list-btn {
+            background: #a48fff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        
+        .list-btn:hover {
+            background: #8b7fd8;
+        }
+        
+        /* 하단 글 목록 */
+        .other-articles-section {
+            margin-top: 40px;
+        }
+        
+        .other-articles-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #a48fff;
+            text-align: center;
+        }
+        
+        .other-articles-list {
+            background: #2d2d2d;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .other-article-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #444;
+            transition: background 0.3s;
+        }
+        
+        .other-article-item:hover {
+            background: #3d3d3d;
+        }
+        
+        .other-article-item:last-child {
+            border-bottom: none;
+        }
+        
+        .other-article-title {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .other-article-title:hover {
+            color: #a48fff;
+        }
+        
+        .other-article-meta {
+            color: #888;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+        
+        .other-article-author {
+            color: #a48fff;
+            font-weight: bold;
+        }
+        
+        /* 페이지네이션 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .pagination a {
+            padding: 8px 12px;
+            background: #3d3d3d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .pagination a:hover {
+            background: #a48fff;
+        }
+        
+        .pagination .current {
+            background: #a48fff;
+        }
+    </style>
 </head>
 <body>
-<h2 th:text="${article.title}">제목</h2>
+    <!-- 네비게이션 바 -->
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="/">MINE</a>
+            <a href="/articles">Mined</a>
+            <a href="/articles/new">Mining</a>
+            <a href="#">Chats</a>
+            <a href="#">Help/Contact</a>
+        </div>
+        <div>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="logout-btn">Log Out</button>
+            </form>
+        </div>
+    </nav>
 
-<p><strong>작성자:</strong> <span th:text="${article.author}">작성자</span></p>
-<p><strong>작성일:</strong> <span th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</span></p>
+    <div class="main-container">
+        <!-- 제목 섹션 -->
+        <div class="title-section">
+            <h1 class="main-title">Mined For You</h1>
+        </div>
 
-<hr/>
+        <!-- 글 상세 섹션 -->
+        <div class="article-section">
+            <div class="article-header">
+                <h2 class="article-title" th:text="${article.title}">글 제목</h2>
+                <div class="edit-delete-buttons" th:if="${#authorization.expression('isAuthenticated()') and #authentication.name == article.author}">
+                    <a th:href="@{'/articles/' + ${article.id} + '/edit'}">
+                        <button type="button" class="edit-btn">수정</button>
+                    </a>
+                    <form th:action="@{'/articles/' + ${article.id} + '/delete'}" method="post" style="display:inline;">
+                        <button type="submit" class="delete-btn" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="article-meta">
+                <span class="article-author" th:text="${article.author}">작성자</span>
+                <span class="article-date" th:text="${#temporals.format(article.createdAt, 'yyyy.MM.dd HH:mm')}">날짜</span>
+                <span class="share-icon">📤</span>
+            </div>
+            
+            <div class="article-content" th:text="${article.content}">본문 내용</div>
+        </div>
 
-<div th:text="${article.content}">본문 내용</div>
+        <!-- 댓글 섹션 -->
+        <div class="comments-section">
+            <h3 class="comments-title">댓글</h3>
+            
+            <!-- 기존 댓글들 -->
+            <div th:each="comment : ${comments}" class="comment">
+                <div class="comment-header">
+                    <span class="comment-author" th:text="${comment.author}">댓글 작성자</span>
+                    <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'MM.dd HH:mm')}">댓글 날짜</span>
+                </div>
+                <div class="comment-content" th:text="${comment.content}">댓글 내용</div>
+            </div>
+            
+            <!-- 댓글 입력 폼 -->
+            <div class="comment-form" th:if="${#authorization.expression('isAuthenticated()')}">
+                <form th:action="@{'/articles/' + ${article.id} + '/comments'}" method="post">
+                    <div class="comment-input-container">
+                        <span class="comment-author-display" th:text="${#authentication.name}">작성자</span>
+                        <input type="text" name="content" class="comment-input" placeholder="댓글을 남겨주세요" required>
+                        <button type="submit" class="comment-submit">→</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- 목록 버튼 -->
+            <a th:href="@{/articles}">
+                <button type="button" class="list-btn">목록</button>
+            </a>
+        </div>
 
-<br/>
-
-<!-- ✅ 수정/삭제 버튼 (로그인 + 본인일 때만 노출) -->
-<div th:if="${#authorization.expression('isAuthenticated()') and #authentication.name == article.author}">
-    <a th:href="@{'/articles/' + ${article.id} + '/edit'}">
-        <button type="button">수정하기</button>
-    </a>
-
-    <form th:action="@{'/articles/' + ${article.id} + '/delete'}" method="post" style="display:inline;">
-        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
-    </form>
-</div>
-
-<!-- 목록으로 돌아가기 -->
-<a th:href="@{/articles}">
-    <button type="button">목록으로</button>
-</a>
+        <!-- 하단 글 목록 -->
+        <div class="other-articles-section">
+            <h3 class="other-articles-title">전체 글 보기</h3>
+            <div class="other-articles-list">
+                <div th:each="otherArticle : ${otherArticles}" class="other-article-item">
+                    <a th:href="@{'/articles/' + ${otherArticle.id}}" class="other-article-title" th:text="${otherArticle.title}">다른 글 제목</a>
+                    <div class="other-article-meta">
+                        <span class="other-article-author" th:text="${otherArticle.author}">작성자</span>
+                        <span th:text="${#temporals.format(otherArticle.createdAt, 'MM.dd')}">날짜</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <a href="#">&lt;</a>
+                <a href="#" class="current">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">5</a>
+                <a href="#">&gt;</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
