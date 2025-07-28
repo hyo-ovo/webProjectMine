@@ -13,6 +13,7 @@
         <th>제목</th>
         <th>작성자</th>
         <th>작성일</th>
+        <th>기능</th> <!-- 수정/삭제 버튼 칸 -->
     </tr>
     </thead>
     <tbody>
@@ -20,8 +21,19 @@
         <td>
             <a th:href="@{'/articles/' + ${article.id}}" th:text="${article.title}">제목</a>
         </td>
-        <td th:text="${article.author}">작성자</td>
+        <td th:text="${article.author}">작성자</td> <!-- ✅ author는 String이므로 .username 쓰지 말 것 -->
         <td th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</td>
+        <td>
+            <!-- 현재 로그인한 사용자가 작성자와 동일할 때만 수정/삭제 버튼 노출 -->
+            <div th:if="${#authentication.name == article.author}">
+                <a th:href="@{'/articles/' + ${article.id} + '/edit'}">
+                    <button type="button">수정</button>
+                </a>
+                <form th:action="@{'/articles/' + ${article.id} + '/delete'}" method="post" style="display:inline;">
+                    <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                </form>
+            </div>
+        </td>
     </tr>
     </tbody>
 </table>

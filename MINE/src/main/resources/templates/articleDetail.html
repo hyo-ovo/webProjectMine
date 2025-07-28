@@ -16,6 +16,17 @@
 
 <br/>
 
+<!-- ✅ 수정/삭제 버튼 (로그인 + 본인일 때만 노출) -->
+<div th:if="${#authorization.expression('isAuthenticated()') and #authentication.name == article.author}">
+    <a th:href="@{'/articles/' + ${article.id} + '/edit'}">
+        <button type="button">수정하기</button>
+    </a>
+
+    <form th:action="@{'/articles/' + ${article.id} + '/delete'}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
+    </form>
+</div>
+
 <!-- 목록으로 돌아가기 -->
 <a th:href="@{/articles}">
     <button type="button">목록으로</button>

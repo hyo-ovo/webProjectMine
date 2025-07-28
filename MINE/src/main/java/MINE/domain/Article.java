@@ -17,6 +17,8 @@ public class Article {
     private String title;
     private String content;
 
-    private String author; // 작성자
-    private LocalDateTime createdAt; // 작성일시
+    @Column(nullable = false)
+    private String author;  // null 방지
+
+    private LocalDateTime createdAt;
 }
